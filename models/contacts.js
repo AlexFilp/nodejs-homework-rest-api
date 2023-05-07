@@ -4,7 +4,6 @@ const crypto = require("crypto");
 const { HttpError } = require("../utils/HttpError");
 
 const contactsPath = path.join(process.cwd(), "models/contacts.json");
-console.log(contactsPath);
 
 const listContactsService = async () => {
   const contacts = await fs.readFile(contactsPath);
