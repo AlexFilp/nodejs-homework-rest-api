@@ -2,6 +2,13 @@ const fs = require("fs/promises");
 const path = require("path");
 const crypto = require("crypto");
 const { HttpError } = require("../utils/HttpError");
+const Joi = require("joi");
+
+const schema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+});
 
 const contactsPath = path.join(process.cwd(), "models/contacts.json");
 
@@ -32,29 +39,11 @@ const removeContactService = async (contactId) => {
 
 const addContactService = async (body) => {
   const contacts = await listContactsService();
-  const newContact = { id: crypto.randomUUID(), ...body };
-  if (!newContact.name || newContact.name === "") {
-    throw new HttpError(400, "missing name field");
-  } else if (!newContact.email || newContact.email === "") {
-    throw new HttpError(400, "missing email field");
-  } else if (!newContact.phone || newContact.phone === "") {
-    throw new HttpError(400, "missing phone field");
-  } else if (contacts.find((contact) => contact.name === newContact.name)) {
-    throw new HttpError(
-      400,
-      `Contact with name '${newContact.name}' is already existing!`
-    );
-  } else if (contacts.find((contact) => contact.phone === newContact.phone)) {
-    throw new HttpError(
-      400,
-      `Contact with phone '${newContact.phone}' is already existing!`
-    );
-  } else if (contacts.find((contact) => contact.email === newContact.email)) {
-    throw new HttpError(
-      400,
-      `Contact with email '${newContact.email}' is already existing!`
-    );
+  const { error } = schema.validate(body);
+  if (error) {
+    throw new HttpError(400, error.message);
   }
+  const newContact = { id: crypto.randomUUID(), ...body };
   contacts.push(newContact);
   fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
   return newContact;
@@ -66,7 +55,6 @@ const updateContactService = async (contactId, body) => {
   if (!updatedContact) {
     throw new HttpError(404, "Not found");
   }
-  console.log(body);
   if (!body.name && !body.email && !body.phone) {
     throw new HttpError(400, "Missing fields");
   }
