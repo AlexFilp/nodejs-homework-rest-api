@@ -28,8 +28,8 @@ const getContactById = async (req, res, next) => {
 const removeContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedContact = await removeContactService(id);
-    res.status(200).json(deletedContact);
+    await removeContactService(id);
+    res.status(200).json({ message: "contact deleted" });
   } catch (error) {
     next(error);
   }
