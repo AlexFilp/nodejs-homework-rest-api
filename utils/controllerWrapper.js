@@ -1,5 +1,5 @@
-const cntrlWrapper = (cntrl) => {
-  const func = async (req, res, next) => {
+const controllerWrapper = (cntrl) => {
+  return async (req, res, next) => {
     try {
       await cntrl(req, res, next);
     } catch (error) {
@@ -7,7 +7,6 @@ const cntrlWrapper = (cntrl) => {
       next(error);
     }
   };
-  return func;
 };
 
-module.exports = cntrlWrapper;
+module.exports = controllerWrapper;

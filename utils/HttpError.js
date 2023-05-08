@@ -5,7 +5,7 @@ class HttpError extends Error {
   }
 }
 
-const HttpErrorFunc = (statusCode, message) => {
+const httpErrorFunc = (statusCode, message) => {
   const error = new Error(message);
   error.status = statusCode;
   return error;
@@ -13,5 +13,5 @@ const HttpErrorFunc = (statusCode, message) => {
 
 module.exports = {
   HttpError,
-  HttpErrorFunc,
+  httpErrorFunc,
 };

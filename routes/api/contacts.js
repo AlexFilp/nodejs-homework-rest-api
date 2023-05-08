@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-  listContacts,
+  getContacts,
   getContactById,
   removeContact,
   addContact,
@@ -9,7 +9,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").get(listContacts).post(addContact);
+router.route("/").get(getContacts).post(addContact);
 router
   .route("/:id")
   .get(getContactById)

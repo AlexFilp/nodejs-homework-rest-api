@@ -1,15 +1,15 @@
 const {
-  listContactsService,
+  getContactsService,
   getContactByIdService,
   removeContactService,
   addContactService,
   updateContactService,
 } = require("../models/contacts");
 
-const cntrlWrapper = require("../utils/cntrlWrapper");
+const { controllerWrapper } = require("../utils/index");
 
-const listContacts = async (req, res) => {
-  const contacts = await listContactsService();
+const getContacts = async (req, res) => {
+  const contacts = await getContactsService();
   res.status(200).json(contacts);
 };
 
@@ -22,7 +22,7 @@ const getContactById = async (req, res) => {
 const removeContact = async (req, res) => {
   const { id } = req.params;
   await removeContactService(id);
-  res.status(200).json({ message: "contact deleted" });
+  res.status(200).json({ message: `contact with id "${id}" deleted` });
 };
 
 const addContact = async (req, res) => {
@@ -37,9 +37,9 @@ const updateContact = async (req, res) => {
 };
 
 module.exports = {
-  listContacts: cntrlWrapper(listContacts),
-  getContactById: cntrlWrapper(getContactById),
-  removeContact: cntrlWrapper(removeContact),
-  addContact: cntrlWrapper(addContact),
-  updateContact: cntrlWrapper(updateContact),
+  getContacts: controllerWrapper(getContacts),
+  getContactById: controllerWrapper(getContactById),
+  removeContact: controllerWrapper(removeContact),
+  addContact: controllerWrapper(addContact),
+  updateContact: controllerWrapper(updateContact),
 };
