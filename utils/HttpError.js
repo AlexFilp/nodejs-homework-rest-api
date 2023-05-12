@@ -1,11 +1,11 @@
-class HttpError extends Error {
-  constructor(statusCode, message) {
-    super(message);
-    this.statusCode = statusCode;
-  }
-}
+// class HttpError extends Error {
+//   constructor(statusCode, message) {
+//     super(message);
+//     this.statusCode = statusCode;
+//   }
+// }
 
-const httpErrorFunc = (statusCode, message) => {
+const HttpError = (statusCode, message) => {
   const error = new Error(message);
   error.status = statusCode;
   return error;
@@ -13,5 +13,4 @@ const httpErrorFunc = (statusCode, message) => {
 
 module.exports = {
   HttpError,
-  httpErrorFunc,
 };

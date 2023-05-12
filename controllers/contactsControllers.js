@@ -1,5 +1,5 @@
 const { Contact } = require("../service/schemas/contact");
-const { HttpError, httpErrorFunc } = require("../utils");
+const { HttpError } = require("../utils");
 
 const { controllerWrapper } = require("../utils");
 
