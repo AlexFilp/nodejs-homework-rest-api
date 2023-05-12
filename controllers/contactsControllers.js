@@ -1,4 +1,5 @@
-const Contact = require("../service/schemas/contact");
+const { Contact } = require("../service/schemas/contact");
+const { HttpError, httpErrorFunc } = require("../utils");
 
 const { controllerWrapper } = require("../utils");
 
@@ -12,28 +13,51 @@ const addContact = async (req, res) => {
   res.status(201).json(newContact);
 };
 
-// const getContactById = async (req, res) => {
-//   const { id } = req.params;
-//   const contactById = await getContactByIdService(id);
-//   res.status(200).json(contactById);
-// };
+const getContactById = async (req, res) => {
+  const { id } = req.params;
+  const contactById = await Contact.findById(id);
+  if (!contactById) {
+    throw HttpError(404, "Not found");
+  }
+  res.status(200).json(contactById);
+};
 
-// const removeContact = async (req, res) => {
-//   const { id } = req.params;
-//   await removeContactService(id);
-//   res.status(200).json({ message: `contact with id "${id}" deleted` });
-// };
+const updateContact = async (req, res) => {
+  const { id } = req.params;
+  const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
+  if (!updatedContact) {
+    throw HttpError(404, "Not found");
+  }
+  res.status(200).json(updatedContact);
+};
 
-// const updateContact = async (req, res) => {
-//   const { id } = req.params;
-//   const updatedContact = await updateContactService(id, req.body);
-//   res.status(200).json(updatedContact);
-// };
+const updateStatusContact = async (req, res) => {
+  const { id } = req.params;
+  const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
+  if (!updatedContact) {
+    throw HttpError(404, "Not found");
+  }
+  res.status(200).json(updatedContact);
+};
+
+const removeContact = async (req, res) => {
+  const { id } = req.params;
+  const removedContact = await Contact.findByIdAndRemove(id);
+  if (!removedContact) {
+    throw HttpError(404, "Not found");
+  }
+  res.status(200).json({ message: `contact with id "${id}" deleted` });
+};
 
 module.exports = {
   getContacts: controllerWrapper(getContacts),
   addContact: controllerWrapper(addContact),
-  // getContactById: controllerWrapper(getContactById),
-  // removeContact: controllerWrapper(removeContact),
-  // updateContact: controllerWrapper(updateContact),
+  getContactById: controllerWrapper(getContactById),
+  updateContact: controllerWrapper(updateContact),
+  updateStatusContact: controllerWrapper(updateStatusContact),
+  removeContact: controllerWrapper(removeContact),
 };
