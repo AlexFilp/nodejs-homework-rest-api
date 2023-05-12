@@ -1,6 +1,6 @@
 const Contact = require("../service/schemas/contact");
 
-const { controllerWrapper } = require("../utils/index");
+const { controllerWrapper } = require("../utils");
 
 const getContacts = async (req, res) => {
   const contacts = await Contact.find();
