@@ -1,4 +1,4 @@
-const { Contact } = require("../service/schemas/contact");
+const { Contact } = require("../schemas");
 const { HttpError } = require("../utils");
 
 const { controllerWrapper } = require("../utils");
@@ -17,7 +17,7 @@ const getContactById = async (req, res) => {
   const { id } = req.params;
   const contactById = await Contact.findById(id);
   if (!contactById) {
-    throw HttpError(404, "Not found");
+    throw new HttpError(404, "Not found");
   }
   res.status(200).json(contactById);
 };
@@ -28,7 +28,7 @@ const updateContact = async (req, res) => {
     new: true,
   });
   if (!updatedContact) {
-    throw HttpError(404, "Not found");
+    throw new HttpError(404, "Not found");
   }
   res.status(200).json(updatedContact);
 };
@@ -39,7 +39,7 @@ const updateStatusContact = async (req, res) => {
     new: true,
   });
   if (!updatedContact) {
-    throw HttpError(404, "Not found");
+    throw new HttpError(404, "Not found");
   }
   res.status(200).json(updatedContact);
 };
@@ -48,7 +48,7 @@ const removeContact = async (req, res) => {
   const { id } = req.params;
   const removedContact = await Contact.findByIdAndRemove(id);
   if (!removedContact) {
-    throw HttpError(404, "Not found");
+    throw new HttpError(404, "Not found");
   }
   res.status(200).json({ message: `contact with id "${id}" deleted` });
 };
