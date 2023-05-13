@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Joi = require("joi");
-const { handleMongooseSchemaErr } = require("../../utils");
+
+const { handleMongooseSchemaErr } = require("../utils");
 
 const phoneRegexp = /^\(\d{2,3}\)\s?\d{3}-\d{4}$/;
 
@@ -37,34 +37,8 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true }
 );
 
-const SchemaForAdd = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-  favorite: Joi.boolean(),
-});
-const SchemaForUpdate = Joi.object({
-  name: Joi.string(),
-  email: Joi.string(),
-  phone: Joi.string(),
-  favorite: Joi.boolean(),
-});
-
-const SchemaForUpdateFavorite = Joi.object({
-  favorite: Joi.boolean().required(),
-});
-
 contactSchema.post("save", handleMongooseSchemaErr);
 
 const Contact = mongoose.model("contact", contactSchema);
 
-const schemas = {
-  SchemaForAdd,
-  SchemaForUpdate,
-  SchemaForUpdateFavorite,
-};
-
-module.exports = {
-  Contact,
-  schemas,
-};
+module.exports = Contact;
