@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { handleMongooseSchemaErr } = require("../utils");
+const { handleMongooseSchemaErr } = require("../../utils");
 
 const phoneRegexp = /^\(\d{2,3}\)\s?\d{3}-\d{4}$/;
 
@@ -23,6 +23,7 @@ const contactSchema = new Schema(
       type: String,
       minlength: 10,
       maxlength: 15,
+      unique: true,
       match: [
         phoneRegexp,
         "Incorect phone type. Try to type for example: (123) 123-1234",

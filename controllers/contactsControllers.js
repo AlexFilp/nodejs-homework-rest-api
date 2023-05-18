@@ -1,7 +1,5 @@
-const { Contact } = require("../schemas");
-const { HttpError } = require("../utils");
-
-const { controllerWrapper } = require("../utils");
+const { Contact } = require("../schemas/contacts");
+const { HttpError, controllerWrapper } = require("../utils");
 
 const getContacts = async (req, res) => {
   const contacts = await Contact.find();
@@ -9,6 +7,11 @@ const getContacts = async (req, res) => {
 };
 
 const addContact = async (req, res) => {
+  const { phone } = req.body;
+  const contact = await Contact.findOne({ phone });
+  if (contact) {
+    throw new HttpError(409, "Contact with this phone number already exists!");
+  }
   const newContact = await Contact.create(req.body);
   res.status(201).json(newContact);
 };
