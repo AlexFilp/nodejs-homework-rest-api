@@ -16,14 +16,13 @@ const contactSchema = new Schema(
     email: {
       type: String,
       minlength: 5,
-      maxlength: 30,
+      maxlength: 50,
       required: [true, "Set email for contact"],
     },
     phone: {
       type: String,
       minlength: 10,
       maxlength: 15,
-      unique: true,
       match: [
         phoneRegexp,
         "Incorect phone type. Try to type for example: (123) 123-1234",
@@ -33,6 +32,11 @@ const contactSchema = new Schema(
     favorite: {
       type: Boolean,
       default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
   },
   { versionKey: false, timestamps: true }
