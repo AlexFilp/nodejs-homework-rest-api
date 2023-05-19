@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const { handleMongooseSchemaErr } = require("../utils");
+const { handleMongooseSchemaErr } = require("../../utils");
 
 const phoneRegexp = /^\(\d{2,3}\)\s?\d{3}-\d{4}$/;
 
@@ -16,7 +16,7 @@ const contactSchema = new Schema(
     email: {
       type: String,
       minlength: 5,
-      maxlength: 30,
+      maxlength: 50,
       required: [true, "Set email for contact"],
     },
     phone: {
@@ -32,6 +32,11 @@ const contactSchema = new Schema(
     favorite: {
       type: Boolean,
       default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
   },
   { versionKey: false, timestamps: true }

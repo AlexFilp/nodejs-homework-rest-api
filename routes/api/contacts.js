@@ -8,25 +8,31 @@ const {
   removeContact,
 } = require("../../controllers/contactsControllers");
 
-const { validateBody, isValidId } = require("../../middlewares");
-const { joiSchemas } = require("../../schemas");
+const { validateBody, isValidId, authenticate } = require("../../middlewares");
+const { joiSchemas } = require("../../schemas/contacts");
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(getContacts)
-  .post(validateBody(joiSchemas.schemaForAdd), addContact);
+  .get(authenticate, getContacts)
+  .post(authenticate, validateBody(joiSchemas.schemaForAdd), addContact);
 
 router
   .route("/:id")
-  .get(isValidId, getContactById)
-  .put(isValidId, validateBody(joiSchemas.schemaForUpdate), updateContact)
-  .delete(isValidId, removeContact);
+  .get(authenticate, isValidId, getContactById)
+  .put(
+    authenticate,
+    isValidId,
+    validateBody(joiSchemas.schemaForUpdate),
+    updateContact
+  )
+  .delete(authenticate, isValidId, removeContact);
 
 router
   .route("/:id/favorite")
   .patch(
+    authenticate,
     isValidId,
     validateBody(joiSchemas.schemaForUpdateFavorite),
     updateStatusContact
