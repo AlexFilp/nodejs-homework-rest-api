@@ -18,7 +18,12 @@ router.post("/login", validateBody(joiSchemas.loginSchema), login);
 
 router.get("/current", authenticate, getCurrent);
 
-router.patch("/users", authenticate, updateSubscription);
+router.patch(
+  "/users",
+  authenticate,
+  validateBody(joiSchemas.updateSubscriptionSchema),
+  updateSubscription
+);
 
 router.post("/logout", authenticate, logOut);
 
