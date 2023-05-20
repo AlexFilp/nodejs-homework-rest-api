@@ -51,15 +51,18 @@ const getCurrent = async (req, res) => {
 const updateSubscription = async (req, res) => {
   const user = req.user;
   const { subscription } = req.body;
-  if (
-    subscription !== "starter" &&
-    subscription !== "pro" &&
-    subscription !== "business"
-  ) {
-    throw new HttpError(400, "Wrong subscription type");
-  }
-  await User.findByIdAndUpdate(user._id, { subscription });
-  res.json({ message: `Your subscription has updated to ${subscription}` });
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    { subscription },
+    { new: true }
+  );
+  res.json({
+    message: `Your subscription has updated to ${subscription}`,
+    user: {
+      email: updatedUser.email,
+      subscription: updatedUser.subscription,
+    },
+  });
 };
 
 const logOut = async (req, res) => {

@@ -1,9 +1,7 @@
 const Joi = require("joi");
 
-const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-
 const registerSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required().messages({
+  email: Joi.string().email().required().messages({
     "any.required": "Email is a required field",
     "string.pattern.base": "Incorrect type of email",
     "string.empty": "Email is not allowed to be empty",
@@ -16,7 +14,7 @@ const registerSchema = Joi.object({
 });
 
 const loginSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required().messages({
+  email: Joi.string().email().required().messages({
     "any.required": "Email is a required field",
     "string.pattern.base": "Incorrect type of email",
     "string.empty": "Email is not allowed to be empty",
@@ -28,9 +26,19 @@ const loginSchema = Joi.object({
   }),
 });
 
+const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.boolean()
+    .valid("starter", "pro", "business")
+    .required()
+    .messages({
+      "any.required": "Favorite is a required field",
+    }),
+});
+
 const joiSchemas = {
   registerSchema,
   loginSchema,
+  updateSubscriptionSchema,
 };
 
 module.exports = joiSchemas;
