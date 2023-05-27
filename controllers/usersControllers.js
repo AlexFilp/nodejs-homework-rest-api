@@ -1,9 +1,14 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
 const { User } = require("../schemas/users");
 const { HttpError, controllerWrapper } = require("../utils");
 
 const { SECRET_KEY } = process.env;
+
+const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -11,8 +16,17 @@ const register = async (req, res) => {
   if (user) {
     throw new HttpError(409, "Email in use");
   }
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...req.body, password: hashedPassword });
+
+  const avatarURL = gravatar.url(email);
+
+  const newUser = await User.create({
+    ...req.body,
+    password: hashedPassword,
+    avatarURL,
+  });
+
   res.status(201).json({
     email: newUser.email,
     subscription: newUser.subscription,
@@ -49,10 +63,10 @@ const getCurrent = async (req, res) => {
 };
 
 const updateSubscription = async (req, res) => {
-  const user = req.user;
+  const { _id } = req.user;
   const { subscription } = req.body;
   const updatedUser = await User.findByIdAndUpdate(
-    user._id,
+    _id,
     { subscription },
     { new: true }
   );
@@ -65,6 +79,23 @@ const updateSubscription = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tempUpload, originalname } = req.file;
+
+  console.log("tempUpload", tempUpload);
+  console.log("originalname", originalname);
+
+  const filename = `${_id}-avatar.jpg`;
+  const resultUpload = path.join(avatarDir, filename);
+  await fs.rename(tempUpload, resultUpload);
+
+  const avatarURL = path.join("avatars", filename);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.status(200).json({ avatarURL });
+};
+
 const logOut = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: null });
@@ -75,6 +106,7 @@ module.exports = {
   register: controllerWrapper(register),
   login: controllerWrapper(login),
   getCurrent: controllerWrapper(getCurrent),
-  logOut: controllerWrapper(logOut),
   updateSubscription: controllerWrapper(updateSubscription),
+  updateAvatar: controllerWrapper(updateAvatar),
+  logOut: controllerWrapper(logOut),
 };
