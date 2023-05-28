@@ -29,6 +29,7 @@
 
 //   test("login return status 200", async () => {
 //     const response = await request(app).post("/api/users/login");
+//     console.log(response.status);
 //     expect(response.status).toBe(200);
 //   });
 // });
