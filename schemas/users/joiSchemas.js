@@ -26,6 +26,14 @@ const loginSchema = Joi.object({
   }),
 });
 
+const verifyEmailSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "any.required": "Email is a required field",
+    "string.pattern.base": "Incorrect type of email",
+    "string.empty": "Email is not allowed to be empty",
+  }),
+});
+
 const updateSubscriptionSchema = Joi.object({
   subscription: Joi.boolean()
     .valid("starter", "pro", "business")
@@ -39,6 +47,7 @@ const joiSchemas = {
   registerSchema,
   loginSchema,
   updateSubscriptionSchema,
+  verifyEmailSchema,
 };
 
 module.exports = joiSchemas;
