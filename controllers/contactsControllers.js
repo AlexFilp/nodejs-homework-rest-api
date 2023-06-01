@@ -51,13 +51,30 @@ const updateContact = async (req, res) => {
 
 const updateStatusContact = async (req, res) => {
   const { id } = req.params;
-  const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
-    new: true,
-  });
+  const { favorite } = req.body;
+  console.log(favorite);
+  const updatedContact = await Contact.findByIdAndUpdate(
+    id,
+    { favorite: favorite },
+    {
+      new: true,
+    }
+  );
   if (!updatedContact) {
     throw new HttpError(404, "Not found");
   }
-  res.status(200).json(updatedContact);
+
+  let message = null;
+  if (favorite) {
+    message = `You added contact ${updatedContact.name} to favorites.`;
+  } else if (!favorite) {
+    message = `You removed contact ${updatedContact.name} from favorites.`;
+  }
+
+  res.status(200).json({
+    message,
+    contact: updatedContact,
+  });
 };
 
 const removeContact = async (req, res) => {
