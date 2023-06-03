@@ -8,5 +8,5 @@ RUN npm isntall
 
 EXPOSE 3000
 
-CMD ["node", "server"]
+CMD ["npm", "start"]
 
