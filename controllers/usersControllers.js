@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const path = require("path");
 const fs = require("fs/promises");
@@ -7,9 +6,14 @@ const jimp = require("jimp");
 const { v4: uuidv4 } = require("uuid");
 
 const { User } = require("../schemas/users");
-const { HttpError, controllerWrapper, sendEmail } = require("../utils");
+const {
+  HttpError,
+  controllerWrapper,
+  sendEmail,
+  asignTokens,
+} = require("../utils");
 
-const { SECRET_KEY, BASE_URL } = process.env;
+const { BASE_URL } = process.env;
 
 const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
@@ -62,13 +66,12 @@ const login = async (req, res) => {
   if (!passwordCompare) {
     throw new HttpError(401, "Email or password is wrong");
   }
-  const payload = {
-    id: user._id,
-  };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
-  await User.findByIdAndUpdate(user._id, { token });
+
+  const { accessToken, refreshToken } = asignTokens(user);
+
+  await User.findByIdAndUpdate(user._id, { refreshToken });
   res.json({
-    token,
+    accessToken,
     user: {
       email: user.email,
       subscription: user.subscription,
@@ -127,7 +130,7 @@ const verifyEmail = async (req, res) => {
 
   await User.findByIdAndUpdate(user._id, {
     verify: true,
-    verificationToken: "",
+    verificationToken: null,
   });
 
   res.status(200).json({ message: "Verification successful" });
@@ -155,7 +158,7 @@ const resentVerifyEmail = async (req, res) => {
 
 const logOut = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: null });
+  await User.findByIdAndUpdate(_id, { refreshToken: null });
   res.status(204).json();
 };
 
