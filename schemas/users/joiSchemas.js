@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 const registerSchema = Joi.object({
   email: Joi.string().email().required().messages({
-    "any.required": "Email is a required field",
+    "any.required": "Missing required field email",
     "string.pattern.base": "Incorrect type of email",
     "string.empty": "Email is not allowed to be empty",
   }),
@@ -15,7 +15,7 @@ const registerSchema = Joi.object({
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required().messages({
-    "any.required": "Email is a required field",
+    "any.required": "Missing required field email",
     "string.pattern.base": "Incorrect type of email",
     "string.empty": "Email is not allowed to be empty",
   }),
@@ -23,6 +23,14 @@ const loginSchema = Joi.object({
     "any.required": "Password is a required field",
     "string.min": "Password length must be at least {{#limit}} characters long",
     "string.empty": "Password is not allowed to be empty",
+  }),
+});
+
+const verifyEmailSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "any.required": "Missing required field email",
+    "string.pattern.base": "Incorrect type of email",
+    "string.empty": "Email is not allowed to be empty",
   }),
 });
 
@@ -39,6 +47,7 @@ const joiSchemas = {
   registerSchema,
   loginSchema,
   updateSubscriptionSchema,
+  verifyEmailSchema,
 };
 
 module.exports = joiSchemas;
