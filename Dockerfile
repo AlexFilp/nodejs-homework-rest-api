@@ -1,10 +1,12 @@
 FROM node
 
-WORKDIR /nodejs-homework-rest-api
+WORKDIR /app
 
-COPY . .
+COPY package.json .
 
 RUN npm isntall
+
+COPY . .
 
 EXPOSE 3000
 
