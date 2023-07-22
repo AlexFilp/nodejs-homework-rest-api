@@ -11,11 +11,10 @@ const {
   controllerWrapper,
   sendEmail,
   asignTokens,
+  handleAvatar,
 } = require("../utils");
 
 const { BASE_URL } = process.env;
-
-const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -101,18 +100,17 @@ const updateSubscription = async (req, res) => {
   });
 };
 
+const avatarDir = path.join(__dirname, "../", "public", "avatars");
+
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
   const { path: tempUpload, originalname } = req.file;
 
-  const image = await jimp.read(`temp/${originalname}`);
-  // Resize the image to width 150 and auto height.
-  image.resize(250, 250);
-  // Save and overwrite the image
-  await image.writeAsync(`temp/${originalname}`);
-
   const filename = `${_id}-avatar.jpg`;
   const resultUpload = path.join(avatarDir, filename);
+
+  handleAvatar(`temp/${originalname}`);
+
   await fs.rename(tempUpload, resultUpload);
 
   const avatarURL = path.join("avatars", filename);
